@@ -2,6 +2,7 @@ package br.com.alura.forum.controller.dto;
 
 import br.com.alura.forum.models.Topic;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,16 +16,16 @@ public class TopicDto {
     private LocalDateTime createdDate;
 
     public TopicDto(Topic topic) {
-        this.id = topic.getId();
-        this.title = topic.getTitle();
-        this.message = topic.getMessage();
-        this.createdDate = topic.getCreatedDate();
+        if (topic != null) {
+            this.id = topic.getId();
+            this.title = topic.getTitle();
+            this.message = topic.getMessage();
+            this.createdDate = topic.getCreatedDate();
+        }
     }
 
-    public static List<TopicDto> map(List<Topic> topics) {
+    public static Page<TopicDto> map(Page<Topic> topics) {
         return topics
-                .stream()
-                .map(TopicDto::new)
-                .collect(Collectors.toList());
+                .map(TopicDto::new);
     }
 }
