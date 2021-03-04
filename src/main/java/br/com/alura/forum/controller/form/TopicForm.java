@@ -1,6 +1,5 @@
 package br.com.alura.forum.controller.form;
 
-import br.com.alura.forum.models.Course;
 import br.com.alura.forum.models.Topic;
 import br.com.alura.forum.repository.CourseRepository;
 
@@ -9,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Data
 public class TopicForm {
@@ -22,7 +20,7 @@ public class TopicForm {
     private String courseName;
 
     public Topic map(CourseRepository courseRepository) {
-        Course course = courseRepository.findByName(courseName);
+        var course = courseRepository.findByName(courseName);
         return new Topic(title, message, course);
     }
 }

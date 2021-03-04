@@ -8,6 +8,8 @@ import br.com.alura.forum.models.Topic;
 import br.com.alura.forum.repository.CourseRepository;
 import br.com.alura.forum.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,8 +20,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/topics")
@@ -30,7 +30,8 @@ public class TopicController {
     @Autowired
     CourseRepository courseRepository;
 
-    @GetMapping()
+    @GetMapping
+    @Cacheable(value = "topicsList")
     public Page<TopicDto> index(@RequestParam(required = false) String courseName,
                                 @PageableDefault(sort = "id",
                                         direction = Sort.Direction.ASC,
@@ -48,36 +49,39 @@ public class TopicController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TopicDtoDetails> show(@PathVariable Long id) {
-        Optional<Topic> optionalTopic = topicRepository.findById(id);
+        var optionalTopic = topicRepository.findById(id);
         return optionalTopic.map(topic -> {
             return ResponseEntity.ok(new TopicDtoDetails(topic));
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping()
+    @PostMapping
     @Transactional
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<TopicDto> create(@Valid @RequestBody TopicForm topicForm, UriComponentsBuilder uriBuilder) {
-        Topic topic = topicForm.map(courseRepository);
+        var topic = topicForm.map(courseRepository);
         topicRepository.save(topic);
 
-        URI uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
+        var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
         return ResponseEntity.created(uri).body(new TopicDto(topic));
     }
     
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<TopicDto> update(@PathVariable Long id, @Valid @RequestBody TopicUpdateForm topicForm) {
-        Optional<Topic> optionalTopic = topicRepository.findById(id);
+        var optionalTopic = topicRepository.findById(id);
         return optionalTopic.map(topic -> {
-            Topic updatedTopic = topicForm.update(id, topicRepository);
+            var updatedTopic = topicForm.update(id, topicRepository);
             return ResponseEntity.ok(new TopicDto(updatedTopic));
         }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicsList", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<Topic> optionalTopic = topicRepository.findById(id);
+        var optionalTopic = topicRepository.findById(id);
         return optionalTopic.map(topic -> {
             topicRepository.deleteById(id);
             return ResponseEntity.ok().build();
