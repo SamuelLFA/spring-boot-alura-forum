@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FormErrorDto {
+
     private String field;
     private String error;
 

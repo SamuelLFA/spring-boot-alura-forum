@@ -1,12 +1,14 @@
 package br.com.alura.forum.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Answer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +21,4 @@ public class Answer {
 	private User author;
 	private Boolean solution = false;
 
-	public Answer() {}
 }

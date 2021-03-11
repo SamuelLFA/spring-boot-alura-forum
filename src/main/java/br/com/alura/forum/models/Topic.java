@@ -1,6 +1,7 @@
 package br.com.alura.forum.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Topic {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +33,4 @@ public class Topic {
 		this.course = course;
 	}
 
-	public Topic() {}
 }
