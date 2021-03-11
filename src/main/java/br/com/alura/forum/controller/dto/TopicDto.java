@@ -5,8 +5,6 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class TopicDto {
