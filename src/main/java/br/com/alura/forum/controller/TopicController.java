@@ -50,9 +50,9 @@ public class TopicController {
     @GetMapping("/{id}")
     public ResponseEntity<TopicDtoDetails> show(@PathVariable Long id) {
         var optionalTopic = topicRepository.findById(id);
-        return optionalTopic.map(topic -> {
-            return ResponseEntity.ok(new TopicDtoDetails(topic));
-        }).orElse(ResponseEntity.notFound().build());
+        return optionalTopic.map(topic ->
+            ResponseEntity.ok(new TopicDtoDetails(topic))
+        ).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
